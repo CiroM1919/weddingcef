@@ -868,6 +868,15 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
 #scratchCanvas{border-radius:18px !important;}
 .prize{border-radius:18px !important;}
 
+
+/* Two IBANs layout */
+.ibanGrid{display:grid; gap:14px}
+.ibanItem{border-radius:16px; padding:12px 10px; background:rgba(255,255,255,.65); border:1px solid rgba(0,0,0,.06)}
+.ibanItem .copyBtn{min-width:150px}
+@media (min-width:520px){
+  .ibanGrid{grid-template-columns:1fr 1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1081,10 +1090,20 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
         <div class="scratchArea" id="scratchArea">
           <!-- What user sees after scratching -->
           <div class="prize secret" id="ibanSecret" aria-live="polite">
-            <div class="prTitle">IBAN Ciro</div>
-            <div class="prIban" id="ibanValue">IT12V0338501601100080245808</div>
-            <button class="copyBtn" id="copyIban" type="button" aria-label="Copia IBAN">Copia IBAN</button>
-            <div class="copyMsg" id="copyMsg" aria-hidden="true">Copiato ✓</div>
+            <div class="ibanGrid">
+              <div class="ibanItem">
+                <div class="prTitle">IBAN Ciro</div>
+                <div class="prIban" id="ibanValue">IT12V0338501601100080245808</div>
+                <button class="copyBtn" id="copyIban" type="button" aria-label="Copia IBAN Ciro">Copia IBAN</button>
+                <div class="copyMsg" id="copyMsg" aria-hidden="true">Copiato ✓</div>
+              </div>
+              <div class="ibanItem">
+                <div class="prTitle">IBAN Filomena</div>
+                <div class="prIban" id="ibanValue2">IT34M0103076160000000770642</div>
+                <button class="copyBtn" id="copyIban2" type="button" aria-label="Copia IBAN Filomena">Copia IBAN</button>
+                <div class="copyMsg" id="copyMsg2" aria-hidden="true">Copiato ✓</div>
+              </div>
+            </div>
           </div>
 
           <!-- Underlay while scratching (keeps layout without revealing IBAN) -->
@@ -1496,22 +1515,23 @@ window.addEventListener('DOMContentLoaded', ()=>{
   // Keep UI clickable (button sits above, canvas doesn't intercept taps)
   cv.style.pointerEvents = 'none';
 
-  // Copy
-  if(btn){
-    btn.addEventListener('click', async (e)=>{
+  // Copy helpers
+  function bindCopy(btnEl, msgEl, value){
+    if(!btnEl) return;
+    btnEl.addEventListener('click', async (e)=>{
       e.preventDefault();
       e.stopPropagation();
       let ok=false;
       try{
         if(navigator.clipboard && window.isSecureContext){
-          await navigator.clipboard.writeText(iban);
+          await navigator.clipboard.writeText(value);
           ok=true;
         }
       }catch(_e){}
       if(!ok){
         try{
           const ta=document.createElement('textarea');
-          ta.value=iban; ta.setAttribute('readonly','');
+          ta.value=value; ta.setAttribute('readonly','');
           ta.style.position='fixed'; ta.style.top='0'; ta.style.left='0'; ta.style.opacity='0';
           document.body.appendChild(ta);
           ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
@@ -1519,15 +1539,21 @@ window.addEventListener('DOMContentLoaded', ()=>{
           ta.remove();
         }catch(_e){}
       }
-      if(!ok){ try{ window.prompt('Copia IBAN:', iban); }catch(_e){} }
-      if(msg){
-        msg.textContent = ok ? 'Copiato ✓' : 'Tieni premuto e copia';
-        msg.classList.add('show');
-        msg.setAttribute('aria-hidden','false');
-        setTimeout(()=>{ msg.classList.remove('show'); msg.setAttribute('aria-hidden','true'); }, 1400);
+      if(!ok){ try{ window.prompt('Copia IBAN:', value); }catch(_e){} }
+      if(msgEl){
+        msgEl.textContent = ok ? 'Copiato ✓' : 'Tieni premuto e copia';
+        msgEl.classList.add('show');
+        msgEl.setAttribute('aria-hidden','false');
+        setTimeout(()=>{ msgEl.classList.remove('show'); msgEl.setAttribute('aria-hidden','true'); }, 1400);
       }
     });
   }
+
+  bindCopy(btn, msg, iban);
+  const btn2 = document.getElementById('copyIban2');
+  const msg2 = document.getElementById('copyMsg2');
+  const iban2 = document.getElementById('ibanValue2')?.textContent?.trim() || '';
+  bindCopy(btn2, msg2, iban2);
 
   const ctx = cv.getContext('2d');
   const DPR = Math.max(1, Math.min(1.5, window.devicePixelRatio || 1));
