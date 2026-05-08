@@ -848,12 +848,25 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
   justify-content:center;
   padding:10px 14px;
   border-radius:999px;
-  border:1px solid rgba(201,168,76,.35);
-  background:rgba(201,168,76,.16);
-  color:var(--tx);
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.60);
+  color:#fff;
   text-decoration:none;
 }
 .gformBtn:active{transform:translateY(1px)}
+
+
+/* Scratch card layout fix (no extra white space) */
+.scratchInner{padding:12px !important;}
+.scratchArea{margin:0 !important;}
+.scratchArea canvas{display:block;}
+
+
+/* IBAN scratch: remove extra white space */
+.scratchInner{min-height:auto !important; padding:12px !important;}
+.scratchHint{display:none !important;}
+#scratchCanvas{border-radius:18px !important;}
+.prize{border-radius:18px !important;}
 
 </style>
 </head>
@@ -941,17 +954,7 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
     <div class="sig sr d3">
       <div class="sig-c">Con amore,</div>
       <div class="sig-n">Ciro <span class="sig-a">&</span> Filomena</div>
-      <div style="position:relative;display:inline-block">
-        <button class="cbtn" onclick="toggleCal(event)">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Aggiungi al Calendario ▾
-        </button>
-        <div class="cdrop" id="calDrop">
-          <a class="copt" href="https://calendar.google.com/calendar/r/eventedit?text=Matrimonio+Ciro+%26+Filomena&dates=20260828T150000Z/20260828T220000Z&details=Rito+civile+ore+17:00+%7C+Cena+ore+20:00&location=Hotel+Boutique+Esplanade,+Via+Poseidonia+41,+Laura+SA" target="_blank">📅 Google Calendar</a>
-          <a class="copt" href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:20260828T150000Z%0ADTEND:20260828T220000Z%0ASUMMARY:Matrimonio%20Ciro%20%26%20Filomena%0ADESCRIPTION:Rito%20Civile%20ore%2017:00%20%7C%20Cena%20ore%2020:00%0ALOCATION:Hotel%20Boutique%20Esplanade%2C%20Via%20Poseidonia%2041%2C%20Laura%20SA%0AEND:VEVENT%0AEND:VCALENDAR" download="matrimonio.ics">🍎 Apple / Outlook (.ics)</a>
-        </div>
       </div>
-    </div>
   </section>
 
   <!-- PHOTO -->
@@ -969,7 +972,7 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
     <div class="tl">
       <div class="ti2 sr">
         <div class="tic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <div class="tb"><div class="tt">ore 17:00</div><div class="te">Rito Civile</div><div class="tp">Giardini del Savoy<br><span style="opacity:.85">(adiacenti al Boutique Hotel Esplanade)</span><br><span style="opacity:.85"></span></div></div>
+        <div class="tb"><div class="tt">ore 17:00</div><div class="te">Rito Civile</div><div class="tp">Giardini del Savoy<br><span style="opacity:.85">(adiacenti al Boutique Hotel Esplanade)</span><br></div></div>
       </div>
       <div class="ti2 sr d1">
         <div class="tic"><svg viewBox="0 0 24 24"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg></div>
@@ -977,7 +980,7 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
       </div>
       <div class="ti2 sr d2">
         <div class="tic"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
-        <div class="tb"><div class="tt">ore 20:00</div><div class="te">Cena di Gala</div><div class="tp">Sala ricevimenti</div></div>
+        <div class="tb"><div class="tt">ore 20:00</div><div class="te">Cena</div><div class="tp">Sala ricevimenti</div></div>
       </div>
       <div class="ti2 sr d3">
         <div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -1013,7 +1016,6 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
           <div class="mapcta">Apri Maps</div>
         </a>
       </div>
-      <div class="park">🚗 <em>Parcheggio: Boutique Hotel Esplanade (stesso punto di arrivo per tutta la giornata).</em></div>
     </div>
     <div class="lpan" id="t-ricevimento">
       <div class="lcard">
@@ -1021,9 +1023,6 @@ footer{background:var(--dk);padding:56px 32px 46px;text-align:center}
         <div class="lpin"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div class="lv">Hotel Boutique Esplanade</div></div>
         <div class="ltr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="lt">Subito dopo il rito civile</span></div>
         <div class="la">Via Poseidonia 41<br>84050 Laura (SA)</div>
-        <div class="lmore">
-          <div class="lbadges"><span class="lbd">Piscina & Giardino</span><span class="lbd">Parcheggio</span><span class="lbd">A due passi dal mare</span></div>
-          <p class="ldesc">Una location raccolta con giardini curati e piscina: perfetta per l’aperitivo e per proseguire la serata. È vicina al mare e ai Templi di Paestum.</p>
         </div>
         <a href="https://maps.google.com/?q=Hotel+Boutique+Esplanade+Via+Poseidonia+41+Laura+SA" target="_blank" class="mlink"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Apri in Maps</a>
         <a class="mapprev" href="https://maps.google.com/?q=Hotel+Boutique+Esplanade+Via+Poseidonia+41+Laura+SA" target="_blank" rel="noopener">
@@ -1445,7 +1444,6 @@ function tab(name){
 }
 
 /* ─── CALENDAR ─── */
-function toggleCal(e){e.stopPropagation();document.getElementById('calDrop').classList.toggle('open')}
 document.addEventListener('click',()=>document.getElementById('calDrop')?.classList.remove('open'));
 
 /* ─── RSVP ─── */
